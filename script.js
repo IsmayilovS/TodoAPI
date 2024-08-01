@@ -13,7 +13,6 @@ async function fetchTodoData() {
         const response = await fetch(API_URL);
         const data = await response.json();      
         data.forEach(value => todoListAll(value));
-        console.log(data);
         
     } catch (error) {
         console.log(error);
@@ -39,10 +38,8 @@ async function addTodo(event) {
             const todo = await response.json()
             todoListAll(todo)
             todoInput.value =""
-            console.log(todo);
         } catch (error) {
             console.log(error);
-            
         }
         
     }
@@ -51,8 +48,32 @@ async function addTodo(event) {
 function todoListAll(todo) {
     const li = document.createElement('li');
     li.innerHTML = `<input type="checkbox" ${todo.completed ? "checked" : ""}>
-    <span>${todo.title}</span>`
-    todoList.appendChild(li)
+    <span>${todo.title}</span>
+    <button class="editBtn">Edit</button>
+    <button class="dltBtn">Delete</button>`
+    todoList.appendChild(li);
+    li.dataset.id = todo.id
+    const editBtn = li.querySelector('.editBtn');
+    editBtn.addEventListener('click',()=> editTodo(li))
 
-    
 }
+
+function editTodo(li) {
+    const span = li.querySelector('span');
+    const editBtn = li.querySelector('.editBtn');
+    const currentText = span.textContent;
+    if(editBtn.textContent === 'Edit') { 
+    span.innerHTML = `<input type="text" value="${currentText}">`;
+    editBtn.textContent = "Save";
+}
+else{
+    const newText = span.querySelector("input").value.trim();
+    if (newText) {
+        span.textContent = newText;
+        editBtn.textContent = "Edit";
+
+    }
+}
+}
+
+
